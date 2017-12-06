@@ -20,6 +20,7 @@ RUN apt-get --yes --force-yes update \
       g++ \
       gcc \
       gfortran \
+      zlib1g-dev \
       binutils-dev \
       flex \
       bison \
@@ -37,7 +38,7 @@ RUN cd /build \
       && wget http://www.mpich.org/static/downloads/3.2/mpich-3.2.tar.gz \
       && tar xvzf mpich-3.2.tar.gz \
       && cd /build/mpich-3.2 \
-      && ./configure \
+      && ./configure --prefix=/usr \
       && make -j4 \
       && make install \
       && make clean \
@@ -62,11 +63,18 @@ RUN cd /opt/openfoam/OpenFOAM-5.0/etc \
       && sed -i 's/export FOAM_INST_DIR=$(/# export FOAM_INST_DIR=$(/g' bashrc \
       && sed -i 's/export FOAM_INST_DIR=$HOME/# export FOAM_INST_DIR=$HOME/g' bashrc \
       && sed -i 's/# export FOAM_INST_DIR=\/opt\/$WM_PROJECT/export FOAM_INST_DIR=\/opt\/openfoam/g' bashrc \
-      && sed -i 's/export WM_MPLIB=SYSTEMOPENMPI/export WM_MPLIB=SYSTEMMPI/g' bashrc
+      && sed -i 's/export WM_MPLIB=SYSTEMOPENMPI/export WM_MPLIB=SYSTEMMPI/g' bashrc \
+      && cd /opt/openfoam/OpenFOAM-5.0/wmake/rules/linux64Gcc \
+      && sed -i 's/gcc/mpicc/g' c \
+      && sed -i 's/g++/mpicxx/g' c++
 
 # Compile
 # NOTE: We change shell here to ensure the correct OpenFOAM environment is set
 SHELL ["/bin/bash", "-c"]
+ENV MPI_ROOT=/usr
+ENV MPI_ARCH_FLAGS="-DMPICH_SKIP_MPICXX"
+ENV MPI_ARCH_INC="-I$MPI_ROOT/include"
+ENV MPI_ARCH_LIBS="-L$MPI_ROOT/lib -lmpi"
 RUN cd /opt/openfoam \
       && source OpenFOAM-5.0/etc/bashrc \
       && cd /opt/openfoam/ThirdParty-5.0 \
