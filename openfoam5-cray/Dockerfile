@@ -1,8 +1,5 @@
 FROM ubuntu:17.04
 
-COPY ./of_env.sh /
-ENTRYPOINT ["/of_env.sh"]
-
 # Set up development environment
 RUN apt-get --yes --force-yes update \
       && apt-get install -y -qq \
@@ -84,3 +81,6 @@ RUN cd /opt/openfoam \
 
 # Setup OpenFOAM bashrc to be sourced at image startup
 #RUN echo "source /opt/openfoam/openfoam-5.0/etc/bashrc" >> /root/.bashrc
+
+COPY ./openfoam_env.sh /
+ENTRYPOINT ["/openfoam_env.sh"]

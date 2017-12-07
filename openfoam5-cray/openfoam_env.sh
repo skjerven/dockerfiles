@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #USER_ID=$(id -u)
 #GROUP_ID=$(id -g)
 #USER=openfoam
@@ -24,3 +26,4 @@
 #exec /bin/bash "$@"
 
 source /opt/openfoam/OpenFOAM-5.0/etc/bashrc
+exec /bin/bash "$@"
