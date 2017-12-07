@@ -1,36 +1,35 @@
 FROM ubuntu:17.04
 
-# TODO: Set an entrypoint
-#ENTRYPOINT [\"/bin/sh\" \"-c\" \"/bin/sh -c \\\"/entry.sh\\\"\"]
+COPY ./of_env.sh /
+ENTRYPOINT ["/of_env.sh"]
 
 # Set up development environment
 RUN apt-get --yes --force-yes update \
       && apt-get install -y -qq \
       apt-transport-https \
-      software-properties-common \
-      build-essential \
-      wget \
-      bash-completion \
       bash-builtins \
-      vim \
-      nano \
-      emacs \
-      make \
+      bash-completion \
+      binutils-dev \
+      bison \
+      build-essential \
       cmake \
+      emacs \
+      flex \
       g++ \
       gcc \
       gfortran \
-      zlib1g-dev \
-      binutils-dev \
-      flex \
-      bison \
-      libreadline-dev \
-      python \
-      python-dev \
       libboost-all-dev \
       libopenblas-dev \
+      libreadline-dev \
+      make \
+      nano \
+      python \
+      python-dev \
+      software-properties-common \
+      vim \
+      wget \
+      zlib1g-dev \
       && apt-get clean all
-
 
 # Build MPICH
 RUN mkdir /build
@@ -75,6 +74,7 @@ ENV MPI_ROOT=/usr
 ENV MPI_ARCH_FLAGS="-DMPICH_SKIP_MPICXX"
 ENV MPI_ARCH_INC="-I$MPI_ROOT/include"
 ENV MPI_ARCH_LIBS="-L$MPI_ROOT/lib -lmpi"
+ENV WM_NCOMPPROCS=8
 RUN cd /opt/openfoam \
       && source OpenFOAM-5.0/etc/bashrc \
       && cd /opt/openfoam/ThirdParty-5.0 \
