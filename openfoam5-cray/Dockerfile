@@ -82,5 +82,5 @@ RUN cd /opt/openfoam \
 # Setup OpenFOAM bashrc to be sourced at image startup
 #RUN echo "source /opt/openfoam/openfoam-5.0/etc/bashrc" >> /root/.bashrc
 
-COPY ./openfoam_env.sh /
-ENTRYPOINT ["/openfoam_env.sh"]
+COPY ./openfoam_env.sh /opt/openfoam
+ENTRYPOINT ["/opt/openfoam/openfoam_env.sh"]
